@@ -9,13 +9,14 @@ using System.Numerics;
 
 namespace game
 {
-    public class Game:GameLoop
+    public class Game : GameLoop
     {
         private bool NonBattle = false;
         private bool isPaused;
         public const uint DEFAULT_WINDOW_WIDTH = 800;
         public const uint DEFAULT_WINDOW_HEIGHT = 640;
         public const string WINDOW_TITLE = "da";
+        private bool GameStarted = false;
         private bool level_1 = true;
         private bool darkness = false;
         protected int waves = 1;
@@ -32,6 +33,8 @@ namespace game
         Dialogue TalkingInTheDark;
         Dialogue OhWow;
         Boss firstBoss;
+        Menu Start;
+        Menu Continue;
         public Game() : base(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, Color.White)
         {
         }
@@ -44,7 +47,7 @@ namespace game
             bullets = new LinkedList<Bullet>();
             HBGs = new LinkedList<HomingBulletGuy>();
             Lvl1BG = new Background("Z:\\progs\\game\\game\\Graphics\\Lvl1bg.png");
-            string[] phrases = { "Я", "Лох","Да" };
+            string[] phrases = { "Я", "Лох", "Да" };
             string[] phrases1 = { "Да что за..?" };
             string[] enteringDarkness = { "Нужно двигаться дальше..." };
             loh = new Dialogue(phrases);
@@ -55,10 +58,31 @@ namespace game
             firstBoss = new Boss("Z:\\progs\\game\\game\\Graphics\\scary_face_2.png", 200, 0);
             OhWow = new Dialogue(new string[] { "Жесть.." });
             gui = new GUI(player);
+            Start = new Menu(new string[] { "Начать игру", "Выход" });
+            Continue = new Menu(new string[] { "Продолжить", "В главное меню", "Выход" });
         }
         public override void Update(GameTime gameTime)
         {
-            if (!isPaused)
+            if(!GameStarted)
+            {
+                Start.Update();
+                Start.Choose(this);
+                bool EnterPressed = Keyboard.IsKeyPressed(Keyboard.Key.Enter);
+                if (EnterPressed)
+                {
+                    switch (Start.At())
+                    {
+                        case 1:
+                            GameStarted = true;
+                            Initialize();
+                            break;
+                        case 2:
+                            Window.Close();
+                            break;
+                    }
+                }
+            }
+            if (!isPaused && GameStarted)
             {
                 Lvl1BG.Animate();
                 Lvl1BG.Update();
@@ -69,34 +93,43 @@ namespace game
                 Bonuses_Control();
                 firstBoss.Update();
                 gui.Update(player);
-                if (firstBoss.hasSpawned&&OhWow.isFinished)
+                if (firstBoss.hasSpawned && OhWow.isFinished)
                 {
                     firstBoss.Shoot(player);
                     foreach (Bullet b in bullets)
                     {
-                        firstBoss.Death(b,bonuses);
+                        firstBoss.Death(b, bonuses);
                     }
                 }
             }
             else
-            if(player.isDead)
+            if (player.isDead&&isPaused)
             {
-                Console.WriteLine("Restart?");
-                string rs = Console.ReadLine();
-                if(rs.ToLower()=="yes")
+                Continue.Choose(this);
+                Continue.Update();
+                bool EnterPressed = Keyboard.IsKeyPressed(Keyboard.Key.Enter);
+                if (EnterPressed)
                 {
-                    Initialize();
-                    UnPause();
-                    waves = 0;
-                    floors = 0;
-                    gameTime.Paused = false;
-                }
-                else
-                {
-                    Window.Close();
+                    switch (Continue.At())
+                    {
+                        case 1:
+                            UnPause();
+                            Initialize();
+                            waves = 0;
+                            floors = 0;
+                            break;
+                        case 2:
+                            UnPause();
+                            GameStarted = false;
+                            waves = 0;
+                            floors = 0;
+                            break;
+                        case 3:
+                            Window.Close();
+                            break;
+                    }
                 }
             }
-           
         }
         public override void Draw(GameTime gameTime)
         {
@@ -163,6 +196,10 @@ namespace game
             }
             if(!NonBattle)
                 gui.Draw(this);
+            if(!GameStarted)
+                Start.Draw(this);
+            if (isPaused)
+                Continue.Draw(this);
         }
         protected void Draw(Entity entity)
         {
