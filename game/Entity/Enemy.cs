@@ -16,9 +16,9 @@ namespace game
         {
             Health = 5;
             sprite.Scale = new Vector2f(1.5f, 1.5f);
-            coordinates = new Vector2f(300, 100);
+            //coordinates = new Vector2f(300, 100);
             sprite.TextureRect = new IntRect(new Vector2i(14, 10), new Vector2i(34, 44));
-            sprite.Position = coordinates;
+            //sprite.Position = coordinates;
             //Console.WriteLine(sprite.GetGlobalBounds().Left+", "+sprite.GetGlobalBounds().Left+sprite.GetGlobalBounds().Width);
             bullets = new LinkedList<Bullet>();
             Color color = sprite.Color;
@@ -32,25 +32,48 @@ namespace game
             coordinates = new Vector2f(300, 100);
             sprite.TextureRect = new IntRect(new Vector2i(14, 10), new Vector2i(34, 44));
             sprite.Position = coordinates;
-            Console.WriteLine(sprite.GetGlobalBounds().Left + ", " + sprite.GetGlobalBounds().Left + sprite.GetGlobalBounds().Width);
+            //Console.WriteLine(sprite.GetGlobalBounds().Left + ", " + sprite.GetGlobalBounds().Left + sprite.GetGlobalBounds().Width);
             coordinates = new Vector2f(x, y);
             bullets = new LinkedList<Bullet>();
             Color color = sprite.Color;
             color.A = 100;
             sprite.Color = color;
         }
-        public void Death(Bullet bullet)
+        public void Death(Bullet bullet,LinkedList<Bonus> bonuses)
         {
-            if (!isDead&&!bullet.isDisposed)
+            if (!isDead && !bullet.isDisposed)
             {
                 if (this.Collides(bullet))
                 {
                     Health--;
                     if (Health == 0)
                     {
+                        isDead = true;
+                        Random rand = new Random();
+                        int value = rand.Next(100);
+                        if (value <= 18)
+                        {
+                            if (value <= 10)
+                            {
+                                Bonus bonus = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "HP", this);
+                                bonuses.AddLast(bonus);
+                                //Console.WriteLine("AAAAAAAAAAAAAAA");
+                            }
+                            else if (value <= 13)
+                            {
+                                Bonus bonus = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "AttackSpeed", this);
+                                bonuses.AddLast(bonus);
+                            }
+                            else
+                            {
+                                Bonus bonus  = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "Speed", this);
+                                bonuses.AddLast(bonus);
+                            }
+
+                        }
+                            //Console.WriteLine("Random:"+value);
                         sprite.Dispose();
                         tex.Dispose();
-                        isDead = true;
 
                     }
                     bullet.sprite.Dispose();

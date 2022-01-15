@@ -23,7 +23,9 @@ namespace game
             font = new Font("Z:\\progs\\game\\game\\Fonts\\DefaultFont.ttf");
             text = new Text(phrases[CurrentPhrase], font);
             rect = new RectangleShape(new Vector2f(560, 200));
-            rect.FillColor = Color.Cyan;
+            Color color = Color.Cyan;
+            color.A = 150;
+            rect.FillColor = color;
             text.FillColor = Color.Black;
             rect.Position = new Vector2f(120, 440);
             text.Position = new Vector2f(140, 460);

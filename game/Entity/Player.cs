@@ -12,19 +12,24 @@ namespace game
         public bool isInvincible = false;
         public bool inInvincibility = false;
         private int startingTicks = 0;
-        private int Health;
+        public int Health;
+        public Shield shield;
         public bool isDead= false;
         public int movespeed;
+        public int AttackSpeed = 1;
+        public const int MAX_MOVESPEED = 6;
+        public const int MAX_ATTACK_SPEED = 8;
         private bool canMove = true;
         private bool canShoot = true;
         //private static string path = "Z:\\progs\\game\\game\\Graphics\\heart.png";
         public Player(string path):base(path)
         {
-            Health = 10;
+            coordinates = new Vector2f(350f, 500f);
+            Health = 2;
             sprite.TextureRect = new IntRect(new Vector2i(4,30), new Vector2i(56,42));
-            sprite.Scale = new Vector2f(1.5f,1.5f);
+            sprite.Scale = new Vector2f(1.2f,1.2f);
             movespeed = 3;
-            
+            shield = new Shield("Z:\\progs\\game\\game\\Graphics\\shield.png", this);
         }
         public void Move()
         {
@@ -52,14 +57,16 @@ namespace game
                 }
             }
         }
-        public void Shoot(LinkedList<Bullet> bullets, GameLoop gameLoop, int ticks)
+        public void Shoot(LinkedList<Bullet> bullets, GameLoop gameLoop)
         {
             if (!isDead&&canShoot)
             {
                 bool Shooting = Keyboard.IsKeyPressed(Keyboard.Key.Z);
-                if (Shooting && gameLoop.TotalTicksBeforeShooting >= ticks)
+                if (Shooting && gameLoop.TotalTicksBeforeShooting >= 11-AttackSpeed)
                 {
-                    Bullet bul = new Bullet("Z:\\progs\\game\\game\\Graphics\\Bullet.png", this, 0, -5);
+                    Bullet bul = new Bullet("Z:\\progs\\game\\game\\Graphics\\all.png", this, 0, -5);
+                    bul.sprite.TextureRect = new IntRect(new Vector2i(31, 26), new Vector2i(9, 11));
+                    bul.sprite.Scale = new Vector2f(2.5f, 2.5f);
                     bullets.AddLast(bul);
                     //Console.WriteLine(bullets.Count);
                     gameLoop.TotalTicksBeforeShooting = 0;
@@ -99,16 +106,17 @@ namespace game
                 isDead = true;
                 sprite.Dispose();
                 tex.Dispose();
-                gameTime.Pause();
+                //gameTime.Pause();
             }
         }
         public void Invincibility()
         {
-            if (isInvincible == true && inInvincibility == false)
+            if (isInvincible == true && inInvincibility == false&&Health>0)
             {
                 inInvincibility = true;
                 startingTicks = ticks;
-                Console.WriteLine("Entered Invincibility");
+                shield.Enable();
+                //Console.WriteLine("Entered Invincibility");
             }
             if(isInvincible&&inInvincibility)
             {
@@ -116,7 +124,8 @@ namespace game
                 {
                     isInvincible = false;
                     inInvincibility = false;
-                    Console.WriteLine("Left Invincibility");
+                    shield.Disable();
+                    //Console.WriteLine("Left Invincibility");
                 }
             }
         }
@@ -135,6 +144,11 @@ namespace game
         public void EnableShooting()
         {
             canShoot = true;
+        }
+        public void AddHealth()
+        {
+            Health++;
+            Console.WriteLine(Health);
         }
     }
 }

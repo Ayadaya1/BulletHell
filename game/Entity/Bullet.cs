@@ -23,6 +23,15 @@ namespace game
             XSpeed = xspeed;
             YSpeed = yspeed;
         }
+        public Bullet(string path, float x, float y, float xspeed, float yspeed):base(path)
+        {
+            coordinates = new Vector2f(x,y);
+            sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
+            sprite.Scale = new Vector2f(5f, 5f);
+            sprite.Color = Color.White;
+            XSpeed = xspeed;
+            YSpeed = yspeed;
+        }
         public void fly()
         {
             if (isDisposed == false)
@@ -38,7 +47,7 @@ namespace game
                     sprite.Dispose();
                     tex.Dispose();
                     isDisposed = true;
-                    Console.WriteLine("Bullet Disposed");
+                    //Console.WriteLine("Bullet Disposed");
                 }
                 
 

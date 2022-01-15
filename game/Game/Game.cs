@@ -11,21 +11,27 @@ namespace game
 {
     public class Game:GameLoop
     {
+        private bool NonBattle = false;
+        private bool isPaused;
         public const uint DEFAULT_WINDOW_WIDTH = 800;
         public const uint DEFAULT_WINDOW_HEIGHT = 640;
         public const string WINDOW_TITLE = "da";
-        private bool dial = false;
         private bool level_1 = true;
+        private bool darkness = false;
         protected int waves = 1;
-        Enemy enemy;
+        GUI gui;
+        private int floors = 1;
         LinkedList<Enemy> enemies;
+        LinkedList<Bonus> bonuses;
         LinkedList<HomingBulletGuy> HBGs;
-        Enemy enemy2;
         Player player;
         LinkedList<Bullet> bullets;
         Background Lvl1BG;
-        HomingBulletGuy hbg;
         Dialogue loh;
+        Dialogue EnteringDarkness;
+        Dialogue TalkingInTheDark;
+        Dialogue OhWow;
+        Boss firstBoss;
         public Game() : base(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, Color.White)
         {
         }
@@ -36,57 +42,39 @@ namespace game
         {
             player = new Player("Z:\\progs\\game\\game\\Graphics\\male_movement_right.png");
             bullets = new LinkedList<Bullet>();
-            enemy = new Enemy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png");
-            enemy2 = new Enemy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png",100,100);
             HBGs = new LinkedList<HomingBulletGuy>();
             Lvl1BG = new Background("Z:\\progs\\game\\game\\Graphics\\Lvl1bg.png");
-            hbg = new HomingBulletGuy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png", 500, 300);
             string[] phrases = { "Я", "Лох","Да" };
+            string[] phrases1 = { "Да что за..?" };
+            string[] enteringDarkness = { "Нужно двигаться дальше..." };
             loh = new Dialogue(phrases);
+            TalkingInTheDark = new Dialogue(phrases1);
+            EnteringDarkness = new Dialogue(enteringDarkness);
             enemies = new LinkedList<Enemy>();
-            //enemies.AddLast(enemy);
-           // enemies.AddLast(enemy2);
-            //HBGs.AddLast(hbg);
+            bonuses = new LinkedList<Bonus>();
+            firstBoss = new Boss("Z:\\progs\\game\\game\\Graphics\\scary_face_2.png", 200, 0);
+            OhWow = new Dialogue(new string[] { "Жесть.." });
+            gui = new GUI(player);
         }
         public override void Update(GameTime gameTime)
         {
-            if (!gameTime.Paused)
+            if (!isPaused)
             {
                 Lvl1BG.Animate();
                 Lvl1BG.Update();
                 Level_1();
+                Darkness();
                 Player_Control(gameTime);
-                //enemy.Shoot(EnemyBullets, player);
-
-                //enemy2.Shoot(EnemyBullets, player);
-                enemy2.Update();
-                foreach (Enemy e in enemies)
+                Enemies_Control();
+                Bonuses_Control();
+                firstBoss.Update();
+                gui.Update(player);
+                if (firstBoss.hasSpawned&&OhWow.isFinished)
                 {
-
-                    e.Update();
-                    e.Shoot(player);
-                }
-                foreach (HomingBulletGuy e in HBGs)
-                {
-
-                    e.Update();
-                    e.Shoot(player);
-                }
-                foreach (Bullet b in bullets)
-                {
-                    b.fly();
-                }
-                foreach (Bullet b in bullets)
-                {
-                    b.Animate();
-                    b.Update();
-                    foreach (Enemy e in enemies)
+                    firstBoss.Shoot(player);
+                    foreach (Bullet b in bullets)
                     {
-                        e.Death(b);
-                    }
-                    foreach (HomingBulletGuy e in HBGs)
-                    {
-                        e.Death(b);
+                        firstBoss.Death(b,bonuses);
                     }
                 }
             }
@@ -98,6 +86,9 @@ namespace game
                 if(rs.ToLower()=="yes")
                 {
                     Initialize();
+                    UnPause();
+                    waves = 0;
+                    floors = 0;
                     gameTime.Paused = false;
                 }
                 else
@@ -109,7 +100,8 @@ namespace game
         }
         public override void Draw(GameTime gameTime)
         {
-            Draw(Lvl1BG);
+            if(level_1)
+                Draw(Lvl1BG);
             if (!player.isDead)
                 Draw(player);
             foreach(Bullet b in bullets)
@@ -143,7 +135,34 @@ namespace game
                     }
                 }
             }
+            foreach(Bullet b in firstBoss.bullets)
+            {
+                if(!b.isDisposed)
+                {
+                    Draw(b);
+                }
+            }
+            foreach(Bonus b in bonuses)
+            {
+                if(!b.isDisposed)
+                {
+                    Draw(b);
+                }
+            }
             loh.Draw(this);
+            TalkingInTheDark.Draw(this);
+            EnteringDarkness.Draw(this);
+            OhWow.Draw(this);
+            if(!firstBoss.isDead)
+            {
+                Draw(firstBoss);
+            }
+            if(player.shield.isOn)
+            {
+                Draw(player.shield);
+            }
+            if(!NonBattle)
+                gui.Draw(this);
         }
         protected void Draw(Entity entity)
         {
@@ -185,7 +204,7 @@ namespace game
         {
             if (level_1)
             {
-                if (waves == 2 && StageClear())
+                if (waves == 10 && StageClear())
                 {
                     player.DisableMovement();
                     player.DisableShooting();
@@ -194,15 +213,19 @@ namespace game
                     loh.Change();
                     if(loh.isFinished)
                     {
-                        player.EnableMovement();
-                        player.EnableShooting();
+                        //player.EnableMovement();
                         level_1 = false;
+                        darkness = true;
+                        bullets.Clear();
+                        enemies.Clear();
+                        HBGs.Clear();
+                        //GC.Collect();
                     }
                     
                 }
                 else if (StageClear())
                 {
-                    Console.WriteLine(waves);
+                    //Console.WriteLine(waves);
                     if (waves % 3 == 0)
                         SpawnEnemies(waves, waves / 3);
                     else
@@ -212,13 +235,115 @@ namespace game
                 
             }
         }
+        private void Darkness()
+        {
+            if (darkness)
+            {
+                if (!firstBoss.hasSpawned)
+                    NonBattle = true;
+                else
+                    NonBattle = false;
+                EnteringDarkness.Start();
+                EnteringDarkness.Change();
+                if(EnteringDarkness.isFinished)
+                {
+                    player.EnableMovement();
+                }
+                if (floors < 3)
+                {
+                    if (player.coordinates.Y <= 0)
+                    {
+                        player.coordinates.Y = 640 - player.sprite.GetGlobalBounds().Height;
+                        floors++;
+                    }
+                   
+                }
+                else
+                {
+                    TalkingInTheDark.Start();
+                    player.DisableMovement();
+                    TalkingInTheDark.Change();
+                    if(TalkingInTheDark.isFinished)
+                    {
+                        
+                        firstBoss.Spawn();
+                        OhWow.Start();
+                        OhWow.Change();
+                        if (OhWow.isFinished)
+                        {
+                            player.EnableMovement();
+                            player.EnableShooting();
+                        }
+                    }
+                }
+
+            }
+
+        }
         private void Player_Control(GameTime gameTime)
         {
             player.Move();
+            player.shield.MoveWithPlayer(player);
+            player.shield.Update();
             player.Update();
             player.Invincibility();
             player.Death(gameTime);
-            player.Shoot(bullets, this, 10);
+            if (player.isDead)
+                Pause();
+            player.Shoot(bullets, this);
+            foreach (Bullet b in bullets)
+            {
+                b.fly();
+            }
+            foreach (Bullet b in bullets)
+            {
+               // b.Animate();
+                b.Update();
+                foreach (Enemy e in enemies)
+                {
+                    e.Death(b,bonuses);
+                }
+                foreach (HomingBulletGuy e in HBGs)
+                {
+                    e.Death(b,bonuses);
+                }
+            }
+        }
+        private void Enemies_Control()
+        {
+            foreach (Enemy e in enemies)
+            {
+
+                e.Update();
+                e.Shoot(player);
+            }
+            foreach (HomingBulletGuy e in HBGs)
+            {
+
+                e.Update();
+                e.Shoot(player);
+            }
+        }
+        private void Bonuses_Control()
+        {
+            foreach(Bonus b in bonuses)
+            {
+                if(!b.isDisposed)
+                {
+                    b.Fall();
+                    b.Update();
+                    b.PickUp(player);
+                    b.Clear();
+                }
+            }
+        }
+        private void Pause()
+        {
+            isPaused = true;
+        }
+        private void UnPause()
+        {
+            isPaused = false;
         }
     }
 }

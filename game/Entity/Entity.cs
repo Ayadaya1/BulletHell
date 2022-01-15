@@ -12,7 +12,7 @@ namespace game
         public Texture tex;
         public Sprite sprite;
         public int ticks;
-        public void LoadContent(string texPath)
+        public void LoadContent(string texPath) 
         {
             tex = new Texture(texPath);
         }
