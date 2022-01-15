@@ -7,25 +7,25 @@ using SFML.Window;
 
 namespace game
 {
-    public class Bullet:Entity,IDisposable
+    public class Bullet : Entity, IDisposable
     {
-        public bool isDisposed= false;
+        public bool isDisposed = false;
         private int RectLoc = 6;
         public float XSpeed;
         public float YSpeed;
-        public Bullet(string path, Entity entity, float xspeed, float yspeed):base(path)
+        public Bullet(string path, Entity entity, float xspeed, float yspeed) : base(path)
         {
-            
-            coordinates = new Vector2f(entity.coordinates.X+(entity.sprite.GetGlobalBounds().Width/2)-8, entity.coordinates.Y);
+
+            coordinates = new Vector2f(entity.coordinates.X + (entity.sprite.GetGlobalBounds().Width / 2) - 8, entity.coordinates.Y);
             sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
             sprite.Scale = new Vector2f(5f, 5f);
             sprite.Color = Color.White;
             XSpeed = xspeed;
             YSpeed = yspeed;
         }
-        public Bullet(string path, float x, float y, float xspeed, float yspeed):base(path)
+        public Bullet(string path, float x, float y, float xspeed, float yspeed) : base(path)
         {
-            coordinates = new Vector2f(x,y);
+            coordinates = new Vector2f(x, y);
             sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
             sprite.Scale = new Vector2f(5f, 5f);
             sprite.Color = Color.White;
@@ -36,7 +36,7 @@ namespace game
         {
             if (isDisposed == false)
             {
-                if (coordinates.Y + sprite.GetGlobalBounds().Height > 0&&coordinates.Y<640&&coordinates.X+sprite.GetGlobalBounds().Width>120&&coordinates.X<680)
+                if (coordinates.Y + sprite.GetGlobalBounds().Height > 0 && coordinates.Y < 640 && coordinates.X + sprite.GetGlobalBounds().Width > 120 && coordinates.X < 680)
                 {
                     coordinates.X += XSpeed;
                     coordinates.Y += YSpeed;
@@ -49,7 +49,7 @@ namespace game
                     isDisposed = true;
                     //Console.WriteLine("Bullet Disposed");
                 }
-                
+
 
             }
         }

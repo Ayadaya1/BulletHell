@@ -4,9 +4,9 @@ using System.Text;
 
 namespace game
 {
-    class HomingBulletGuy:Enemy
+    class HomingBulletGuy : Enemy
     {
-        public HomingBulletGuy(string Path, int x, int y):base(Path, x, y)
+        public HomingBulletGuy(string Path, int x, int y) : base(Path, x, y)
         {
             bullets = new LinkedList<Bullet>();
             Health = 8;
@@ -63,7 +63,7 @@ namespace game
                 }
                 player.Hurt(bullets);
             }
-           
+
         }
     }
 }

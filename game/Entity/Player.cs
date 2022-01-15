@@ -7,33 +7,39 @@ using SFML.Window;
 
 namespace game
 {
-    public class Player:Entity
+    public class Player : Entity
     {
         public bool isInvincible = false;
         public bool inInvincibility = false;
         private int startingTicks = 0;
         public int Health;
         public Shield shield;
-        public bool isDead= false;
+        public bool isDead = false;
         public int movespeed;
-        public int AttackSpeed = 1;
+        public int AttackSpeed;
         public const int MAX_MOVESPEED = 6;
         public const int MAX_ATTACK_SPEED = 8;
         private bool canMove = true;
         private bool canShoot = true;
+        private const int STARTING_X = 350;
+        private const int STARTING_Y = 500;
+        private const int STARTING_HEALTH = 2;
+        private const int STARTING_SPEED = 3;
+        private const int STARTING_ATTACK_SPEED = 1;
         //private static string path = "Z:\\progs\\game\\game\\Graphics\\heart.png";
-        public Player(string path):base(path)
+        public Player(string path) : base(path)
         {
-            coordinates = new Vector2f(350f, 500f);
-            Health = 2;
-            sprite.TextureRect = new IntRect(new Vector2i(4,30), new Vector2i(56,42));
-            sprite.Scale = new Vector2f(1.2f,1.2f);
-            movespeed = 3;
+            coordinates = new Vector2f(STARTING_X,STARTING_Y);
+            Health = STARTING_HEALTH;
+            sprite.TextureRect = new IntRect(new Vector2i(4, 30), new Vector2i(56, 42));
+            sprite.Scale = new Vector2f(1.2f, 1.2f);
+            movespeed = STARTING_SPEED;
+            AttackSpeed = STARTING_ATTACK_SPEED;
             shield = new Shield("Z:\\progs\\game\\game\\Graphics\\shield.png", this);
         }
         public void Move()
         {
-            if (!isDead&&canMove)
+            if (!isDead && canMove)
             {
                 bool MovingRight = Keyboard.IsKeyPressed(Keyboard.Key.Right);
                 bool MovingLeft = Keyboard.IsKeyPressed(Keyboard.Key.Left);
@@ -59,10 +65,10 @@ namespace game
         }
         public void Shoot(LinkedList<Bullet> bullets, GameLoop gameLoop)
         {
-            if (!isDead&&canShoot)
+            if (!isDead && canShoot)
             {
                 bool Shooting = Keyboard.IsKeyPressed(Keyboard.Key.Z);
-                if (Shooting && gameLoop.TotalTicksBeforeShooting >= 11-AttackSpeed)
+                if (Shooting && gameLoop.TotalTicksBeforeShooting >= 11 - AttackSpeed)
                 {
                     Bullet bul = new Bullet("Z:\\progs\\game\\game\\Graphics\\all.png", this, 0, -5);
                     bul.sprite.TextureRect = new IntRect(new Vector2i(31, 26), new Vector2i(9, 11));
@@ -89,7 +95,8 @@ namespace game
                             if (!isInvincible)
                             {
                                 Health--;
-                                isInvincible = true;
+                                if(Health>0)
+                                    isInvincible = true;
                             }
                             b.sprite.Dispose();
                             b.tex.Dispose();
@@ -101,26 +108,26 @@ namespace game
         }
         public void Death(GameTime gameTime)
         {
-            if(Health==0)
+            if (Health == 0)
             {
                 isDead = true;
-                sprite.Dispose();
-                tex.Dispose();
+                //sprite.Dispose();
+                //tex.Dispose();
                 //gameTime.Pause();
             }
         }
         public void Invincibility()
         {
-            if (isInvincible == true && inInvincibility == false&&Health>0)
+            if (isInvincible == true && inInvincibility == false && Health > 0)
             {
                 inInvincibility = true;
                 startingTicks = ticks;
                 shield.Enable();
                 //Console.WriteLine("Entered Invincibility");
             }
-            if(isInvincible&&inInvincibility)
+            if (isInvincible && inInvincibility)
             {
-                if(ticks-startingTicks==180)
+                if (ticks - startingTicks == 180)
                 {
                     isInvincible = false;
                     inInvincibility = false;
@@ -149,6 +156,14 @@ namespace game
         {
             Health++;
             Console.WriteLine(Health);
+        }
+        public void Respawn()
+        {
+            Health = STARTING_HEALTH;
+            coordinates = new Vector2f(STARTING_X, STARTING_Y);
+            movespeed = STARTING_SPEED;
+            AttackSpeed = STARTING_ATTACK_SPEED;
+            isDead = false;
         }
     }
 }

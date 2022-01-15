@@ -8,22 +8,22 @@ using SFML.Window;
 
 namespace game
 {
-    class Bonus:Entity
+    class Bonus : Entity
     {
         public string BonusType;
         public bool isDisposed = false;
-        public Bonus(string texPath,string bonusType, Enemy e):base(texPath)
+        public Bonus(string texPath, string bonusType, Enemy e) : base(texPath)
         {
             BonusType = bonusType;
-            if(BonusType=="Speed")
+            if (BonusType == "Speed")
             {
                 sprite.Color = Color.Yellow;
             }
-            if(BonusType == "HP")
+            if (BonusType == "HP")
             {
                 sprite.Color = Color.Red;
             }
-            if(BonusType == "AttackSpeed")
+            if (BonusType == "AttackSpeed")
             {
                 sprite.Color = Color.Green;
             }
@@ -32,7 +32,7 @@ namespace game
         }
         public void Fall()
         {
-            if(!isDisposed)
+            if (!isDisposed)
                 coordinates.Y += 3;
         }
         public void PickUp(Player player)
@@ -49,14 +49,14 @@ namespace game
                             player.movespeed++;
                         }
                     }
-                    if(BonusType == "AttackSpeed")
+                    if (BonusType == "AttackSpeed")
                     {
                         if (player.AttackSpeed < Player.MAX_ATTACK_SPEED)
                         {
                             player.AttackSpeed++;
                         }
                     }
-                    if(BonusType == "HP")
+                    if (BonusType == "HP")
                     {
                         player.AddHealth();
                     }

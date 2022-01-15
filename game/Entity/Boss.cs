@@ -7,7 +7,7 @@ using SFML.Graphics;
 
 namespace game
 {
-    class Boss:Enemy
+    class Boss : Enemy
     {
         private int shootingX = 130;
         public bool hasSpawned = false;
@@ -16,7 +16,7 @@ namespace game
         public Boss(string path, int x, int y) : base(path, x, y)
         {
             sprite.Scale = new Vector2f(0.25f, 0.25f);
-            sprite.TextureRect = new IntRect(new Vector2i(304, 96), new Vector2i(1488,1696));
+            sprite.TextureRect = new IntRect(new Vector2i(304, 96), new Vector2i(1488, 1696));
             Color color = sprite.Color;
             color.A = 0;
             sprite.Color = color;
@@ -36,10 +36,10 @@ namespace game
         }
         public override void Shoot(Player player)
         {
-            if(!isDead&&ticks%15==0)
+            if (!isDead && ticks % 15 == 0)
             {
                 int y = Convert.ToInt32(coordinates.Y + 15 + sprite.GetGlobalBounds().Height);
-                if(shootingX<680)
+                if (shootingX < 680)
                 {
                     Bullet b = new Bullet("Z:\\progs\\game\\game\\Graphics\\Bullet.png", shootingX, y, 0, 0);
                     bullets.AddLast(b);
@@ -47,7 +47,7 @@ namespace game
                 }
                 else
                 {
-                    foreach(Bullet b in bullets)
+                    foreach (Bullet b in bullets)
                     {
                         if (!b.isDisposed)
                         {
@@ -62,11 +62,11 @@ namespace game
                         shootingX = 180;
                 }
             }
-            foreach(Bullet b in bullets)
+            foreach (Bullet b in bullets)
             {
-                if(!b.isDisposed)
+                if (!b.isDisposed)
                 {
-                    if(isDead)
+                    if (isDead)
                     {
                         b.XSpeed = 0;
                         b.YSpeed = 5;

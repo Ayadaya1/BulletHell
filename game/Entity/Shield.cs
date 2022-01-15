@@ -4,10 +4,10 @@ using System.Text;
 
 namespace game
 {
-    public class Shield:Entity
+    public class Shield : Entity
     {
         public bool isOn = false;
-        public Shield(string path, Player player):base(path)
+        public Shield(string path, Player player) : base(path)
         {
             coordinates = player.coordinates;
         }

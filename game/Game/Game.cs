@@ -40,13 +40,14 @@ namespace game
         }
         public override void LoadContent()
         {
+
         }
         public override void Initialize()
         {
             player = new Player("Z:\\progs\\game\\game\\Graphics\\male_movement_right.png");
             bullets = new LinkedList<Bullet>();
             HBGs = new LinkedList<HomingBulletGuy>();
-            Lvl1BG = new Background("Z:\\progs\\game\\game\\Graphics\\Lvl1bg.png");
+            Lvl1BG = new Background("Z:\\progs\\game\\game\\Graphics\\Lvl1bg.png"); 
             string[] phrases = { "Я", "Лох", "Да" };
             string[] phrases1 = { "Да что за..?" };
             string[] enteringDarkness = { "Нужно двигаться дальше..." };
@@ -55,7 +56,7 @@ namespace game
             EnteringDarkness = new Dialogue(enteringDarkness);
             enemies = new LinkedList<Enemy>();
             bonuses = new LinkedList<Bonus>();
-            firstBoss = new Boss("Z:\\progs\\game\\game\\Graphics\\scary_face_2.png", 200, 0);
+            firstBoss = new Boss("Z:\\progs\\game\\game\\Graphics\\scary_face_2.png",200, 0);
             OhWow = new Dialogue(new string[] { "Жесть.." });
             gui = new GUI(player);
             Start = new Menu(new string[] { "Начать игру", "Выход" });
@@ -74,7 +75,7 @@ namespace game
                     {
                         case 1:
                             GameStarted = true;
-                            Initialize();
+                            //Initialize();
                             break;
                         case 2:
                             Window.Close();
@@ -86,6 +87,7 @@ namespace game
             {
                 Lvl1BG.Animate();
                 Lvl1BG.Update();
+                CleanUp();
                 Level_1();
                 Darkness();
                 Player_Control(gameTime);
@@ -114,12 +116,20 @@ namespace game
                     {
                         case 1:
                             UnPause();
-                            Initialize();
+                            bullets.Clear();
+                            enemies.Clear();
+                            HBGs.Clear();
+                            //Initialize();
                             waves = 0;
                             floors = 0;
+                            player.Respawn();
                             break;
                         case 2:
                             UnPause();
+                            player.Respawn();
+                            bullets.Clear();
+                            enemies.Clear();
+                            HBGs.Clear();
                             GameStarted = false;
                             waves = 0;
                             floors = 0;
@@ -211,7 +221,10 @@ namespace game
             foreach (Enemy e in enemies)
             {
                 if (!e.isDead)
+                {
                     alive++;
+                }
+
             }
             foreach (HomingBulletGuy e in HBGs)
             {
@@ -229,12 +242,12 @@ namespace game
             for (int i = 0; i < a; i++)
                 {
                 if(ax<580)
-                    enemies.AddLast(new Enemy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png", ax += 100, 100));
+                    enemies.AddLast(new Enemy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png",ax += 100, 100));
                 }
             for (int i = 0; i < b; i++)
             {
                 if(bx<580)
-                     HBGs.AddLast(new HomingBulletGuy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png", bx += 100, 250));
+                     HBGs.AddLast(new HomingBulletGuy("Z:\\progs\\game\\game\\Graphics\\Ghostie.png",bx += 100, 250));
             }
         }
         private void Level_1()
@@ -381,6 +394,30 @@ namespace game
         private void UnPause()
         {
             isPaused = false;
+        }
+        private void CleanUp()
+        {
+            foreach(Enemy e in enemies)
+            {
+                if (e.isDead)
+                {
+                    int count = 0;
+                    e.sprite.Dispose();
+                    e.tex.Dispose();
+                    foreach(Bullet b in e.bullets)
+                    {
+                        if(b.isDisposed)
+                        {
+                            count++;
+                        }
+                    }    
+                    if(count == e.bullets.Count)
+                    {
+                        e.bullets.Clear();
+                        Console.WriteLine("Clean");
+                    }
+                }
+            }
         }
     }
 }

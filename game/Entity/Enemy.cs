@@ -7,7 +7,7 @@ using SFML.Window;
 
 namespace game
 {
-    class Enemy:Entity
+    class Enemy : Entity
     {
         protected int Health;
         public bool isDead = false;
@@ -25,10 +25,10 @@ namespace game
             color.A = 100;
             sprite.Color = color;
         }
-        public Enemy(string path, int x, int y):this(path)
+        public Enemy(string path, int x, int y) : this(path)
         {
             Health = 5;
-            sprite.Scale = new Vector2f(1.5f,1.5f);
+            sprite.Scale = new Vector2f(1.5f, 1.5f);
             coordinates = new Vector2f(300, 100);
             sprite.TextureRect = new IntRect(new Vector2i(14, 10), new Vector2i(34, 44));
             sprite.Position = coordinates;
@@ -39,7 +39,7 @@ namespace game
             color.A = 100;
             sprite.Color = color;
         }
-        public void Death(Bullet bullet,LinkedList<Bonus> bonuses)
+        public void Death(Bullet bullet, LinkedList<Bonus> bonuses)
         {
             if (!isDead && !bullet.isDisposed)
             {
@@ -66,12 +66,12 @@ namespace game
                             }
                             else
                             {
-                                Bonus bonus  = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "Speed", this);
+                                Bonus bonus = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "Speed", this);
                                 bonuses.AddLast(bonus);
                             }
 
                         }
-                            //Console.WriteLine("Random:"+value);
+                        //Console.WriteLine("Random:"+value);
                         sprite.Dispose();
                         tex.Dispose();
 
@@ -94,15 +94,15 @@ namespace game
                     /*int xspeed = Convert.ToInt32(MathF.Sqrt((MathF.Pow(coordinates.Y-player.coordinates.Y,2f)+MathF.Pow(coordinates.X-player.coordinates.X,2f)))/-(coordinates.Y-player.coordinates.Y));*/
                     try
                     {
-                         xspeed = Convert.ToInt32((player.coordinates.X - coordinates.X) / -(coordinates.Y - player.coordinates.Y));
-                         yspeed = Convert.ToInt32((player.coordinates.Y - coordinates.Y) / MathF.Abs((coordinates.X - player.coordinates.X)));
+                        xspeed = Convert.ToInt32((player.coordinates.X - coordinates.X) / -(coordinates.Y - player.coordinates.Y));
+                        yspeed = Convert.ToInt32((player.coordinates.Y - coordinates.Y) / MathF.Abs((coordinates.X - player.coordinates.X)));
                     }
-                    catch(System.OverflowException)
-                        {
-                         xspeed = 0;
-                         yspeed = 5;
+                    catch (System.OverflowException)
+                    {
+                        xspeed = 0;
+                        yspeed = 5;
                     }
-                     
+
                     if (yspeed > 5)
                         yspeed = 5;
                     if (xspeed > 5)

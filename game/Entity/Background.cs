@@ -8,25 +8,25 @@ using SFML.Window;
 namespace game
 {
 
-    class Background:Entity
+    class Background : Entity
     {
         public int RectX = 0;
         public int RectY = 0;
-        public Background(string Path):base(Path)
+        public Background(string Path) : base(Path)
         {
             coordinates = new Vector2f(0f, 0f);
             sprite.Scale = new Vector2f(2f, 2f);
         }
         public void Animate()
         {
-            if(ticks%5==0)
+            if (ticks % 5 == 0)
             {
-                if(RectX==800&&RectY==1600)
+                if (RectX == 800 && RectY == 1600)
                 {
                     RectX = 0;
                     RectY = 0;
                 }
-                if(RectX<2000)
+                if (RectX < 2000)
                     RectX += 400;
                 else
                 {
