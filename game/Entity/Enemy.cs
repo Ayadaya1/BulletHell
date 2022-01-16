@@ -114,17 +114,35 @@ namespace game
                     bullets.AddLast(bul);
                 }
             }
+            Clean();
             foreach (Bullet b in bullets)
             {
-                if (!b.isDisposed)
-                {
-                    b.fly();
-                    b.Animate();
-                    b.Update();
-                }
+                b.fly();
+                b.Animate();
+                b.Update();
             }
             player.Hurt(bullets);
+            Clean();
         }
-
+        protected void Clean()
+        {
+            Bullet[] buls = new Bullet[bullets.Count];
+            if (buls.Length > 0)
+            {
+                bullets.CopyTo(buls, 0);
+                for (int i = 0; i < bullets.Count; i++)
+                {
+                    if (buls[i].isDisposed)
+                    {
+                        bullets.Remove(buls[i]);
+                        Console.WriteLine(bullets.Count+" Bullets");
+                    }
+                }
+            }
+        }
+        public override int GetHashCode()
+        {
+            return 2;
+        }
     }
 }

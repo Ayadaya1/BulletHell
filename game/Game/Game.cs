@@ -37,10 +37,11 @@ namespace game
         Menu Continue;
         public Game() : base(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, Color.White)
         {
+
         }
         public override void LoadContent()
         {
-
+            GUI.LoadContent("Z:\\progs\\game\\game\\Graphics\\gui.png", "Z:\\progs\\game\\game\\Graphics\\gui.png");
         }
         public override void Initialize()
         {
@@ -64,7 +65,7 @@ namespace game
         }
         public override void Update(GameTime gameTime)
         {
-            if(!GameStarted)
+            if(!GameStarted&&GameTime.Paused)
             {
                 Start.Update();
                 Start.Choose(this);
@@ -83,15 +84,17 @@ namespace game
                     }
                 }
             }
-            if (!isPaused && GameStarted)
+            if (!isPaused && GameStarted && !GameTime.Paused)
             {
                 Lvl1BG.Animate();
                 Lvl1BG.Update();
-                CleanUp();
+               // CleanUp();
                 Level_1();
                 Darkness();
                 Player_Control(gameTime);
+                //Clean();
                 Enemies_Control();
+                Clean();
                 Bonuses_Control();
                 firstBoss.Update();
                 gui.Update(player);
@@ -119,6 +122,7 @@ namespace game
                             bullets.Clear();
                             enemies.Clear();
                             HBGs.Clear();
+                            bonuses.Clear();
                             //Initialize();
                             waves = 0;
                             floors = 0;
@@ -130,6 +134,8 @@ namespace game
                             bullets.Clear();
                             enemies.Clear();
                             HBGs.Clear();
+                            bonuses.Clear();
+                            //GC.Collect();
                             GameStarted = false;
                             waves = 0;
                             floors = 0;
@@ -156,14 +162,12 @@ namespace game
             }
             foreach(Enemy e in enemies)
             {
-                if (!e.isDead)
+                if(!e.isDead)
                     Draw(e);
                 foreach(Bullet b in e.bullets)
                 {
                     if(!b.isDisposed)
-                    {
                         Draw(b);
-                    }
                 }
             }
             foreach (HomingBulletGuy e in HBGs)
@@ -217,7 +221,7 @@ namespace game
         }
         protected bool StageClear()
         {
-            int alive = 0;
+           int alive = 0;
             foreach (Enemy e in enemies)
             {
                 if (!e.isDead)
@@ -269,6 +273,7 @@ namespace game
                         bullets.Clear();
                         enemies.Clear();
                         HBGs.Clear();
+
                         //GC.Collect();
                     }
                     
@@ -414,10 +419,53 @@ namespace game
                     if(count == e.bullets.Count)
                     {
                         e.bullets.Clear();
-                        Console.WriteLine("Clean");
+                        //Console.WriteLine("Clean");
+                    }
+                }
+            }
+        }
+        private void Clean()
+        {
+            Bullet[] buls = new Bullet[bullets.Count];
+            if (buls.Length > 0)
+            {
+                bullets.CopyTo(buls, 0);
+                for (int i = 0; i < bullets.Count; i++)
+                {
+                    if (buls[i].isDisposed)
+                    {
+                        bullets.Remove(buls[i]);
+                        Console.WriteLine(bullets.Count);
+                    }
+                }
+            }
+            Enemy[] es = new Enemy[enemies.Count];
+            if (es.Length > 0)
+            {
+                enemies.CopyTo(es, 0);
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (es[i].isDead && es[i].bullets.Count==0)
+                    {
+                        enemies.Remove(es[i]);
+                        Console.WriteLine(enemies.Count);
+                    }
+                }
+            }
+            HomingBulletGuy[] hbgs = new HomingBulletGuy[HBGs.Count];
+            if (hbgs.Length > 0)
+            {
+                HBGs.CopyTo(hbgs, 0);
+                for (int i = 0; i < HBGs.Count; i++)
+                {
+                    if (hbgs[i].isDead&&hbgs[i].bullets.Count==0)
+                    {
+                        HBGs.Remove(hbgs[i]);
+                        Console.WriteLine(HBGs.Count);
                     }
                 }
             }
         }
     }
+
 }

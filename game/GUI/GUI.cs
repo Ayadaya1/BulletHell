@@ -11,23 +11,28 @@ namespace game
     class GUI
     {
         private Sprite Hearts;
-        private RectangleShape LeftRect;
-        private RectangleShape RightRect;
-        private Sprite Miniature;
+        private Sprite Lines;
+        private static Texture IceGui;
+        private static Texture GirlGui;
+        private static Texture HeartTexture;
         private int MoveSpeed;
         private int HP;
         private int AttackSpeed;
+
         public GUI(Player player)
         {
             Texture tex = new Texture("Z:\\progs\\game\\game\\Graphics\\Heart.png");
+            if(player.type == "Ice")
+            {
+                Lines = new Sprite(IceGui);
+            }
+            else
+            {
+                Lines = new Sprite(GirlGui);
+            }
+            Lines.Scale = new Vector2f(2f, 2f);
             Hearts = new Sprite(tex);
             Hearts.Scale = new Vector2f(0.25f, 0.25f);
-            LeftRect = new RectangleShape(new Vector2f(120,640));
-            RightRect = new RectangleShape(new Vector2f(120, 640));
-            LeftRect.Position = new Vector2f(0, 0);
-            RightRect.Position = new Vector2f(680, 0);
-            LeftRect.FillColor = new Color(46,63,92);
-            RightRect.FillColor = new Color(46, 63, 92);
             HP = player.Health;
             MoveSpeed = player.movespeed;
             AttackSpeed = player.AttackSpeed;
@@ -35,11 +40,10 @@ namespace game
         public void Draw(GameLoop gameLoop)
         {
             int y = 50;
-            gameLoop.Window.Draw(LeftRect);
-            gameLoop.Window.Draw(RightRect);
+            gameLoop.Window.Draw(Lines);
             for (int i = 0; i<HP; i++)
             {
-                Hearts.Position = new Vector2f(690, y);
+                Hearts.Position = new Vector2f(700, y);
                 gameLoop.Window.Draw(Hearts);
                 y += Convert.ToInt32(Hearts.GetGlobalBounds().Height);
             }
@@ -49,6 +53,12 @@ namespace game
             HP = player.Health;
             MoveSpeed = player.movespeed;
             AttackSpeed = player.AttackSpeed;
+        }
+        public static void LoadContent(string path1, string path2)//, string path3)
+        {
+            IceGui = new Texture(path1);
+            GirlGui = new Texture(path2);
+           // HeartTexture = new Texture(path3);
         }
     }
 }

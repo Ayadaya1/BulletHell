@@ -52,6 +52,7 @@ namespace game
                         }
                     }
                 }
+                Clean();
                 foreach (Bullet b in bullets)
                 {
                     if (!b.isDisposed)
@@ -64,6 +65,10 @@ namespace game
                 player.Hurt(bullets);
             }
 
+        }
+        public override int GetHashCode()
+        {
+            return 3;
         }
     }
 }

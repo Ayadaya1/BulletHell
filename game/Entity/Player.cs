@@ -9,6 +9,7 @@ namespace game
 {
     public class Player : Entity
     {
+        public string type;
         public bool isInvincible = false;
         public bool inInvincibility = false;
         private int startingTicks = 0;
@@ -29,6 +30,7 @@ namespace game
         //private static string path = "Z:\\progs\\game\\game\\Graphics\\heart.png";
         public Player(string path) : base(path)
         {
+            type = "Ice";
             coordinates = new Vector2f(STARTING_X,STARTING_Y);
             Health = STARTING_HEALTH;
             sprite.TextureRect = new IntRect(new Vector2i(4, 30), new Vector2i(56, 42));
@@ -100,7 +102,7 @@ namespace game
                             }
                             b.sprite.Dispose();
                             b.tex.Dispose();
-
+                            b.Dispose();
                         }
                     }
                 }
@@ -165,5 +167,10 @@ namespace game
             AttackSpeed = STARTING_ATTACK_SPEED;
             isDead = false;
         }
+        public override int GetHashCode()
+        {
+            return 1;
+        }
+
     }
 }

@@ -13,9 +13,10 @@ namespace game
         private int RectLoc = 6;
         public float XSpeed;
         public float YSpeed;
+        private static Texture EnemyBullets;
+        private static Texture PlayerIceBullets;
         public Bullet(string path, Entity entity, float xspeed, float yspeed) : base(path)
         {
-
             coordinates = new Vector2f(entity.coordinates.X + (entity.sprite.GetGlobalBounds().Width / 2) - 8, entity.coordinates.Y);
             sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
             sprite.Scale = new Vector2f(5f, 5f);
@@ -34,7 +35,7 @@ namespace game
         }
         public void fly()
         {
-            if (isDisposed == false)
+            if (!isDisposed)
             {
                 if (coordinates.Y + sprite.GetGlobalBounds().Height > 0 && coordinates.Y < 640 && coordinates.X + sprite.GetGlobalBounds().Width > 120 && coordinates.X < 680)
                 {
@@ -49,8 +50,6 @@ namespace game
                     isDisposed = true;
                     //Console.WriteLine("Bullet Disposed");
                 }
-
-
             }
         }
         public void Dispose()
@@ -89,8 +88,12 @@ namespace game
                     Console.WriteLine("Bullet Disposed");
                 }
 
-
             }
+        }
+        public static void LoadContent(string path1, string path2)
+        {
+            EnemyBullets = new Texture(path1);
+            PlayerIceBullets = new Texture(path2);
         }
     }
 }
