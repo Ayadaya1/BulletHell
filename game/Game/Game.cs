@@ -12,7 +12,7 @@ namespace game
     public class Game : GameLoop
     {
         bool DemoCompleted = false;
-        private long ticks;
+        private long ticks=0;
         private long startingTicks = 0;
         private bool NonBattle = false;
         private bool isPaused;
