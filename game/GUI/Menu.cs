@@ -14,10 +14,11 @@ namespace game
         private Font font;
         private RectangleShape backGround;
         private int Choice = 1;
-
+        private int startingTicks=0;
+        private int ticks=0;
         public Menu(string[] titles)
         {
-            font = new Font("Z:\\progs\\game\\game\\Fonts\\DefaultFont.ttf");
+            font = new Font("..\\..\\..\\Fonts\\DefaultFont.ttf");
             Number = titles.Length;
             Titles = new Text[Number];
             for(int i = 0; i<titles.Length;i++)
@@ -34,28 +35,35 @@ namespace game
         }
         public void Choose(GameLoop gameLoop)
         {
-            bool Up = Keyboard.IsKeyPressed(Keyboard.Key.Up);
-            bool Down = Keyboard.IsKeyPressed(Keyboard.Key.Down);
-            if(Up)
+            if (ticks - startingTicks >= 10)
             {
-                if(Choice==1)
+                bool Up = Keyboard.IsKeyPressed(Keyboard.Key.Up);
+                bool Down = Keyboard.IsKeyPressed(Keyboard.Key.Down);
+                if (Up)
                 {
-                    Choice = Number;
+                    if (Choice == 1)
+                    {
+                        Choice = Number;
+                        startingTicks = ticks;
+                    }
+                    else
+                    {
+                        Choice--;
+                        startingTicks = ticks;
+                    }
                 }
-                else
+                if (Down)
                 {
-                    Choice--;
-                }
-            }
-            if(Down)
-            {
-                if(Choice == Number)
-                {
-                    Choice = 1;
-                }
-                else
-                {
-                    Choice++;
+                    if (Choice == Number)
+                    {
+                        Choice = 1;
+                        startingTicks = ticks;
+                    }
+                    else
+                    {
+                        Choice++;
+                        startingTicks = ticks;
+                    }
                 }
             }
         }
@@ -65,6 +73,7 @@ namespace game
         }
         public void Update()
         {
+            ticks++;
             for(int i = 1; i<=Number; i++)
             {
                 if (i == Choice)

@@ -10,25 +10,32 @@ namespace game
 {
     class Bonus : Entity
     {
+        private static Texture texture;
         public string BonusType;
         public bool isDisposed = false;
-        public Bonus(string texPath, string bonusType, Enemy e) : base(texPath)
+        public Bonus(string bonusType, Enemy e) : base()
         {
+            sprite = new Sprite(texture);
             BonusType = bonusType;
             if (BonusType == "Speed")
             {
-                sprite.Color = Color.Yellow;
+                sprite.TextureRect = new IntRect(new Vector2i(24,200), new Vector2i(108, 212));
             }
             if (BonusType == "HP")
             {
-                sprite.Color = Color.Red;
+                sprite.TextureRect = new IntRect(new Vector2i(266, 200), new Vector2i(108, 212));
             }
             if (BonusType == "AttackSpeed")
             {
-                sprite.Color = Color.Green;
+                sprite.TextureRect = new IntRect(new Vector2i(140, 200), new Vector2i(108, 212));
+            }
+            if(BonusType == "Freezing")
+            {
+                sprite.TextureRect = new IntRect(new Vector2i(266, 200), new Vector2i(108, 212));
+                sprite.Scale = new Vector2f(2f, 2f);
             }
             coordinates = new Vector2f(e.coordinates.X + e.sprite.GetGlobalBounds().Width / 2, e.coordinates.Y);
-            sprite.Scale = new Vector2f(0.25f, 0.25f);
+            sprite.Scale = new Vector2f(0.5f, 0.5f);
         }
         public void Fall()
         {
@@ -60,6 +67,14 @@ namespace game
                     {
                         player.AddHealth();
                     }
+                    if (BonusType == "Upgrade")
+                    {
+                        player.UpgradePickUp();
+                    }
+                    if(BonusType=="TwinStrike")
+                    {
+                        player.twinStrike = true;
+                    }
                     isDisposed = true;
                 }
             }
@@ -69,8 +84,12 @@ namespace game
             if (isDisposed)
             {
                 sprite.Dispose();
-                tex.Dispose();
+                //tex.Dispose();
             }
+        }
+        new public static void LoadContent(string path)
+        {
+            texture = new Texture(path);
         }
     }
 }

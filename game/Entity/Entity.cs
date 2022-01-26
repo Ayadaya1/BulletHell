@@ -21,6 +21,14 @@ namespace game
             sprite.Position = coordinates;
             ticks++;
         }
+        public Entity(int x, int y)
+        {
+            coordinates = new Vector2f(x, y);
+        }
+        public Entity()
+        {
+
+        }
         public Entity(string texPath)
         {
             tex = new Texture(texPath);

@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="game.Background">
+    <Position X="7.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAIAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Background.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Bonus">
+    <Position X="11.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAEAAAAQgAAAAAAgAAAAAAAABAAAQ=</HashCode>
+      <FileName>Entity\Bonus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Boss">
+    <Position X="7.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAABAAAAAEIAIAABAAAAoAAAAAEAAAAAAQ=</HashCode>
+      <FileName>Entity\Boss.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Bullet">
+    <Position X="13" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAACAAAAAAEAAAAAQAABAAIQAAAAIAAACAAQQ=</HashCode>
+      <FileName>Entity\Bullet.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="game.Dialogue">
+    <Position X="22.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAgAACBAAgAAAAAAAEAIABAAAiAIAAAAAAQAAAQ=</HashCode>
+      <FileName>Entity\Dialogue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Enemy">
+    <Position X="9.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAIAAFAAAAAAABAAAABAAAoAgAAAAAAAgUAY=</HashCode>
+      <FileName>Entity\Enemy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Entity">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAIAAAAAAAAAAIAgAAAIABAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\Entity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.HomingBulletGuy">
+    <Position X="11" Y="8.5" Width="1.5" />
+    <InheritanceLine Type="game.Enemy" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="7.934" />
+        <Point X="10.25" Y="8.125" />
+        <Point X="12.5" Y="8.125" />
+        <Point X="12.5" Y="8.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\HomingBulletGuy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Player">
+    <Position X="14.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gjBRHECAAYAwLAQHACCAAAAAFpERAoZwgABAgBwAgUQ=</HashCode>
+      <FileName>Entity\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Shield">
+    <Position X="16.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABCAAAAAAAAgQAAAAgAAAAAAQ=</HashCode>
+      <FileName>Entity\Shield.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Game">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AKxiSABGAKiDDwBABARIKIBIABICAAwBAzBTiJCEZgU=</HashCode>
+      <FileName>Game\Game.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.GameLoop">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQAAAAAAgAAgwAAAAAIAAgAAQEgAAAAAAAACAAAAEY=</HashCode>
+      <FileName>GameLoop\GameLoop.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.GameTime">
+    <Position X="18.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQgAEAAAAAAAAABABAAAAAAAAAAAAAAACAAAAAEBAA=</HashCode>
+      <FileName>GameLoop\GameTime.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.CharacterSelect">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABYACAAAAAACCgAAAAAAIAAIhACAAgAAAAQAAAQAQEQ=</HashCode>
+      <FileName>GUI\CharacterSelect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Cutscene">
+    <Position X="20.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgAAAIAAAEQIABCAAAAA4RhgAAQAAAE=</HashCode>
+      <FileName>GUI\Cutscene.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.GUI">
+    <Position X="20.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQAAAAAAAAEAhAAAACACAAAQAABAAICAAAAAAAAACQ=</HashCode>
+      <FileName>GUI\GUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Menu">
+    <Position X="22.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAACkAAAkAAAAAIIACACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="game.Program">
+    <Position X="20.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

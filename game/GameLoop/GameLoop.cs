@@ -35,7 +35,6 @@ namespace game
             this.Window = new RenderWindow(new VideoMode(windowWidth,windowHeight),windowTitle);
             this.GameTime = new GameTime();
             Window.Closed += WindowClosed;
-            Window.KeyPressed += KeyboardInput;
             Window.LostFocus += lostFocus;
             Window.GainedFocus += gainedFocus;
         }
@@ -77,9 +76,6 @@ namespace game
         private void WindowClosed(object sender, EventArgs e)
         {
             Window.Close();
-        }
-        private void KeyboardInput(object sender, KeyEventArgs e)
-        {
         }
         private void lostFocus(object sender, EventArgs e)
         {

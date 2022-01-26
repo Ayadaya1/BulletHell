@@ -15,21 +15,42 @@ namespace game
         public float YSpeed;
         private static Texture EnemyBullets;
         private static Texture PlayerIceBullets;
-        public Bullet(string path, Entity entity, float xspeed, float yspeed) : base(path)
+        private static Texture GirlBullets;
+        public Bullet(Entity entity, float xspeed, float yspeed) : base()
         {
             coordinates = new Vector2f(entity.coordinates.X + (entity.sprite.GetGlobalBounds().Width / 2) - 8, entity.coordinates.Y);
-            sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
-            sprite.Scale = new Vector2f(5f, 5f);
-            sprite.Color = Color.White;
+            if (entity.GetHashCode() == 1)
+            {
+                Player player = entity as Player;
+                if (player.type == "Ice")
+                {
+                    sprite = new Sprite(PlayerIceBullets);
+                    sprite.TextureRect = new IntRect(new Vector2i(31, 26), new Vector2i(9, 11));
+                    sprite.Scale = new Vector2f(2.5f, 2.5f);
+                }
+                else
+                {
+                    sprite = new Sprite(PlayerIceBullets);
+                    sprite.TextureRect = new IntRect(new Vector2i(155, 24), new Vector2i(9, 11));
+                    sprite.Scale = new Vector2f(2.5f, 2.5f);
+                    coordinates.X -= 10;
+                }
+            }
+            else
+            {
+                sprite = new Sprite(EnemyBullets);
+                sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
+                sprite.Scale = new Vector2f(5f, 5f);
+            }
             XSpeed = xspeed;
             YSpeed = yspeed;
         }
-        public Bullet(string path, float x, float y, float xspeed, float yspeed) : base(path)
+        public Bullet(float x, float y, float xspeed, float yspeed) : base()
         {
+            sprite = new Sprite(EnemyBullets);
             coordinates = new Vector2f(x, y);
             sprite.TextureRect = new IntRect(new Vector2i(6, 6), new Vector2i(4, 4));
             sprite.Scale = new Vector2f(5f, 5f);
-            sprite.Color = Color.White;
             XSpeed = xspeed;
             YSpeed = yspeed;
         }
@@ -46,7 +67,7 @@ namespace game
                 {
                     this.Dispose();
                     sprite.Dispose();
-                    tex.Dispose();
+                    //tex.Dispose();
                     isDisposed = true;
                     //Console.WriteLine("Bullet Disposed");
                 }
@@ -70,26 +91,7 @@ namespace game
                 }
             }
         }
-        public void FlyToDirection(int x, int y)
-        {
-            if (isDisposed == false)
-            {
-                if (coordinates.Y + sprite.GetGlobalBounds().Height > 0 && coordinates.Y < 640 && coordinates.X + sprite.GetGlobalBounds().Width > 0 && coordinates.X < 800)
-                {
-                    coordinates.X += x;
-                    coordinates.Y += y;
-                }
-                else
-                {
-                    this.Dispose();
-                    sprite.Dispose();
-                    tex.Dispose();
-                    isDisposed = true;
-                    Console.WriteLine("Bullet Disposed");
-                }
-
-            }
-        }
+       
         public static void LoadContent(string path1, string path2)
         {
             EnemyBullets = new Texture(path1);

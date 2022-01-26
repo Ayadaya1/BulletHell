@@ -9,8 +9,12 @@ namespace game
 {
     class Enemy : Entity
     {
+        private static Texture texture;
         protected int Health;
         public bool isDead = false;
+        public bool Frozen = false;
+        public int FreezeTicks = 0;
+        private bool StartedFreezing;
         public LinkedList<Bullet> bullets = new LinkedList<Bullet>();
         public Enemy(string path) : base(path)
         {
@@ -28,9 +32,8 @@ namespace game
         public Enemy(string path, int x, int y) : this(path)
         {
             Health = 5;
-            sprite.Scale = new Vector2f(1.5f, 1.5f);
-            coordinates = new Vector2f(300, 100);
-            sprite.TextureRect = new IntRect(new Vector2i(14, 10), new Vector2i(34, 44));
+            sprite.Scale = new Vector2f(0.75f, 0.75f);
+            sprite.TextureRect = new IntRect(new Vector2i(6, 26), new Vector2i(56, 92));
             sprite.Position = coordinates;
             //Console.WriteLine(sprite.GetGlobalBounds().Left + ", " + sprite.GetGlobalBounds().Left + sprite.GetGlobalBounds().Width);
             coordinates = new Vector2f(x, y);
@@ -39,52 +42,73 @@ namespace game
             color.A = 100;
             sprite.Color = color;
         }
-        public void Death(Bullet bullet, LinkedList<Bonus> bonuses)
+        public Enemy(int x,int y):base(x,y)
+        {
+            sprite = new Sprite(texture);
+            Health = 5;
+            //sprite.Scale = new Vector2f(1.5f, 1.5f);
+            sprite.TextureRect = new IntRect(new Vector2i(6, 26), new Vector2i(56, 92));
+            bullets = new LinkedList<Bullet>();
+            Color color = sprite.Color;
+            color.A = 100;
+            sprite.Color = color;
+        }
+        public Enemy():base()
+        {
+
+        }
+        public void Death(Bullet bullet, LinkedList<Bonus> bonuses, Player player)
         {
             if (!isDead && !bullet.isDisposed)
             {
                 if (this.Collides(bullet))
                 {
-                    Health--;
-                    if (Health == 0)
+                    Health-=player.Damage;
+                    if(player.IceBullets)
+                    {
+                        Freeze();
+                    }
+                    if (Health <= 0)
                     {
                         isDead = true;
                         Random rand = new Random();
                         int value = rand.Next(100);
                         if (value <= 18)
                         {
-                            if (value <= 10)
+                            if (value <= 10 && (!player.HeartOfIce||player.type!="Ice")&&player.Health<5)
                             {
-                                Bonus bonus = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "HP", this);
+                                Bonus bonus = new Bonus("HP", this);
                                 bonuses.AddLast(bonus);
                                 //Console.WriteLine("AAAAAAAAAAAAAAA");
                             }
-                            else if (value <= 13)
+                            else if (value <= 13&&value>10)
                             {
-                                Bonus bonus = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "AttackSpeed", this);
+                                Bonus bonus = new Bonus("AttackSpeed", this);
                                 bonuses.AddLast(bonus);
                             }
-                            else
+                            else if(value>13)
                             {
-                                Bonus bonus = new Bonus("Z:\\progs\\game\\game\\Graphics\\Heart.png", "Speed", this);
+                                Bonus bonus = new Bonus("Speed", this);
                                 bonuses.AddLast(bonus);
                             }
+                            Console.WriteLine("Bonus dropped");
 
                         }
                         //Console.WriteLine("Random:"+value);
-                        sprite.Dispose();
-                        tex.Dispose();
+                        if(GetHashCode()!=4)
+                            sprite.Dispose();
+                        //tex.Dispose();
 
                     }
                     bullet.sprite.Dispose();
-                    bullet.tex.Dispose();
+                    //bullet.tex.Dispose();
                     bullet.isDisposed = true;
                 }
             }
         }
         public virtual void Shoot(Player player)
         {
-            if (!isDead)
+            if (!isDead&&!Frozen)
             {
                 if (ticks % 60 == 0)
                 {
@@ -110,7 +134,7 @@ namespace game
                     if (yspeed < -5)
                         yspeed = -5;
                     //Console.WriteLine(xspeed+" "+yspeed);
-                    Bullet bul = new Bullet("Z:\\progs\\game\\game\\Graphics\\Bullet.png", this, xspeed, yspeed);
+                    Bullet bul = new Bullet( this, xspeed, yspeed);
                     bullets.AddLast(bul);
                 }
             }
@@ -143,6 +167,27 @@ namespace game
         public override int GetHashCode()
         {
             return 2;
+        }
+        new public static void LoadContent(string path)
+        {
+            texture = new Texture(path);
+        }
+        private void Freeze()
+        {
+            StartedFreezing = true;
+        }
+        public void Freezing()
+        {
+            if(StartedFreezing&&!Frozen)
+            {
+                Frozen = true;
+                FreezeTicks = ticks;
+            }
+            if(ticks-FreezeTicks>=120&&Frozen)
+            {
+                Frozen = false;
+                StartedFreezing = false;
+            }
         }
     }
 }

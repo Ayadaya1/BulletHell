@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SFML.System;
+using SFML.Graphics;
 
 namespace game
 {
@@ -10,6 +12,11 @@ namespace game
         {
             bullets = new LinkedList<Bullet>();
             Health = 8;
+        }
+        public HomingBulletGuy(int x, int y):base(x,y)
+        {
+            Health = 8;
+            sprite.TextureRect = new IntRect(new Vector2i(66, 26), new Vector2i(56, 92));
         }
         public override void Shoot(Player player)
         {
@@ -21,7 +28,7 @@ namespace game
                 {
                     if (ticks % 58 == 0)
                     {
-                        Bullet bul = new Bullet("Z:\\progs\\game\\game\\Graphics\\Bullet.png", this, 1, 1);
+                        Bullet bul = new Bullet(this, 1, 1);
                         bullets.AddLast(bul);
                     }
                     foreach (Bullet b in bullets)

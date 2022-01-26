@@ -9,32 +9,33 @@ namespace game
 {
     class Dialogue
     {
-        private Font font;
-        private RectangleShape rect;
+        private static Font font;
+        private static Texture texture;
+        private static Sprite sprite;
         private Text text;
         private int ticks = 0;
         private string[] Phrases;
         private int CurrentPhrase = 0;
-        private bool isStarted = false;
+        public bool isStarted = false;
         public bool isFinished = false;
         public Dialogue(string[] phrases)
         {
             Phrases = phrases;
-            font = new Font("Z:\\progs\\game\\game\\Fonts\\DefaultFont.ttf");
             text = new Text(phrases[CurrentPhrase], font);
-            rect = new RectangleShape(new Vector2f(560, 200));
-            Color color = Color.Cyan;
-            color.A = 150;
-            rect.FillColor = color;
             text.FillColor = Color.Black;
-            rect.Position = new Vector2f(120, 440);
-            text.Position = new Vector2f(140, 460);
+            text.Position = new Vector2f(160, 485);
+            sprite.Position = new Vector2f(120, 440);
+            sprite.TextureRect = new IntRect(new Vector2i(1, 0),new Vector2i(586,161));
+            sprite.Scale = new Vector2f(1f, 1.4f);
+            Color color = sprite.Color;
+            color.A = 220;
+            sprite.Color = color;
         }
         public void Draw(GameLoop gameLoop)
         {
             if(isStarted&&!isFinished)
             {
-                gameLoop.Window.Draw(rect);
+                gameLoop.Window.Draw(sprite);
                 gameLoop.Window.Draw(text);
                 ticks++;
             }
@@ -48,7 +49,7 @@ namespace game
                 if (CurrentPhrase < Phrases.Length)
                 {
                     text = new Text(Phrases[CurrentPhrase], font);
-                    text.Position = new Vector2f(140, 460);
+                    text.Position = new Vector2f(160, 485);
                     text.FillColor = Color.Black;
                     Console.WriteLine("Changed");
                     ticks = 0;
@@ -62,6 +63,12 @@ namespace game
         public void Start()
         {
             isStarted = true;
+        }
+        public static void LoadContent(string path1, string path2)
+        {
+            texture = new Texture(path1);
+            sprite = new Sprite(texture);
+            font = new Font(path2);
         }
     }
 }

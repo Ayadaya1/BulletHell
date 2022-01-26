@@ -9,35 +9,61 @@ namespace game
 {
     public class Player : Entity
     {
+        public bool HeartOfIce;
         public string type;
         public bool isInvincible = false;
+        public bool IceBullets;
         public bool inInvincibility = false;
+        public int TwinStrikeTicks = 0;
         private int startingTicks = 0;
+        private int MeltingTicks = 0;
+        public bool twinStrike = false;
+        public bool TwinStrikeActive = false;
         public int Health;
         public Shield shield;
         public bool isDead = false;
         public int movespeed;
         public int AttackSpeed;
+        public bool Upgrading=false;
+        public bool UnderUpgrade = false;
+        public int UpgradingTicks = 0;
         public const int MAX_MOVESPEED = 6;
+        public int Damage = 1;
         public const int MAX_ATTACK_SPEED = 8;
         private bool canMove = true;
         private bool canShoot = true;
+        private bool startedMelting = false;
         private const int STARTING_X = 350;
         private const int STARTING_Y = 500;
         private const int STARTING_HEALTH = 2;
+        private const int GIRL_STARTING_HEALTH = 3;
         private const int STARTING_SPEED = 3;
         private const int STARTING_ATTACK_SPEED = 1;
-        //private static string path = "Z:\\progs\\game\\game\\Graphics\\heart.png";
-        public Player(string path) : base(path)
+        public bool Upgraded = false;
+        private static Texture IceBoy;
+        private static Texture SomeGirl;
+        public Player() : base()
         {
-            type = "Ice";
             coordinates = new Vector2f(STARTING_X,STARTING_Y);
-            Health = STARTING_HEALTH;
-            sprite.TextureRect = new IntRect(new Vector2i(4, 30), new Vector2i(56, 42));
-            sprite.Scale = new Vector2f(1.2f, 1.2f);
+            if (type == "Ice")
+            {
+                Health = STARTING_HEALTH;
+                HeartOfIce = true;
+                sprite = new Sprite(IceBoy);
+                sprite.TextureRect = new IntRect(new Vector2i(4, 30), new Vector2i(56, 42));
+                sprite.Scale = new Vector2f(1.2f, 1.2f);
+            }
+            else
+            {
+                Health = STARTING_HEALTH;
+                HeartOfIce = false;
+                sprite = new Sprite(SomeGirl);
+                sprite.TextureRect = new IntRect(new Vector2i(4, 30), new Vector2i(56, 42));
+                sprite.Scale = new Vector2f(1.2f, 1.2f);
+            }
             movespeed = STARTING_SPEED;
             AttackSpeed = STARTING_ATTACK_SPEED;
-            shield = new Shield("Z:\\progs\\game\\game\\Graphics\\shield.png", this);
+            shield = new Shield(this);
         }
         public void Move()
         {
@@ -72,12 +98,19 @@ namespace game
                 bool Shooting = Keyboard.IsKeyPressed(Keyboard.Key.Z);
                 if (Shooting && gameLoop.TotalTicksBeforeShooting >= 11 - AttackSpeed)
                 {
-                    Bullet bul = new Bullet("Z:\\progs\\game\\game\\Graphics\\all.png", this, 0, -5);
-                    bul.sprite.TextureRect = new IntRect(new Vector2i(31, 26), new Vector2i(9, 11));
-                    bul.sprite.Scale = new Vector2f(2.5f, 2.5f);
-                    bullets.AddLast(bul);
-                    //Console.WriteLine(bullets.Count);
-                    gameLoop.TotalTicksBeforeShooting = 0;
+                    if (!TwinStrikeActive)
+                    {
+                        Bullet bul = new Bullet(this, 0, -5);
+                        bullets.AddLast(bul);
+                    }
+                    else
+                    {
+                        Bullet bul1 = new Bullet(this, 1, -3);
+                        Bullet bul2 = new Bullet(this, -1, -3);
+                        bullets.AddLast(bul1);
+                        bullets.AddLast(bul2);
+                    }
+                        gameLoop.TotalTicksBeforeShooting = 0;
                     //Console.WriteLine(bul.coordinates.X.ToString()+", "+(bul.coordinates.X + bul.sprite.GetLocalBounds().Width).ToString() );
 
                 }
@@ -96,12 +129,22 @@ namespace game
                             b.isDisposed = true;
                             if (!isInvincible)
                             {
-                                Health--;
-                                if(Health>0)
-                                    isInvincible = true;
+                                if (type != "Ice" || !HeartOfIce)
+                                {
+                                    Health--;
+                                    startedMelting = false;
+                                    HeartOfIce = true;
+                                    if (Health > 0)
+                                        isInvincible = true;
+                                }
+                                else if (type == "Ice" && HeartOfIce)
+                                {
+                                    startedMelting = true;
+                                }
+                                
                             }
                             b.sprite.Dispose();
-                            b.tex.Dispose();
+                            //b.tex.Dispose();
                             b.Dispose();
                         }
                     }
@@ -171,6 +214,97 @@ namespace game
         {
             return 1;
         }
-
+        public void MoveThere()
+        {
+            coordinates.Y -= 2;
+        }
+        public void Melt()
+        {
+            if(HeartOfIce && startedMelting)
+            {
+                MeltingTicks = ticks;
+                HeartOfIce = false;
+            }
+            else if(ticks-MeltingTicks==600)
+            {
+                HeartOfIce = true;
+                startedMelting = false;
+            }
+        }
+        public static void LoadContent(string path1, string path2)
+        {
+            IceBoy = new Texture(path1);
+            SomeGirl = new Texture(path2);
+        }
+        public void SetType(string p_type)
+        {
+            type = p_type;
+        }
+        public void UpdateType()
+        {
+            if (type == "Ice")
+            {
+                Health = STARTING_HEALTH;
+                HeartOfIce = true;
+                sprite = new Sprite(IceBoy);
+                sprite.TextureRect = new IntRect(new Vector2i(4, 30), new Vector2i(56, 42));
+                sprite.Scale = new Vector2f(1.2f, 1.2f);
+            }
+            else
+            {
+                Health = GIRL_STARTING_HEALTH;
+                HeartOfIce = false;
+                sprite = new Sprite(SomeGirl);
+                sprite.TextureRect = new IntRect(new Vector2i(172, 0), new Vector2i(48, 42));
+                sprite.Scale = new Vector2f(1.2f, 1.2f);
+            }
+        }
+        public void UpgradePickUp()
+        {
+            Upgrading = true;
+        }
+        public void UpgradeBullets()
+        {
+            if (Upgrading && !UnderUpgrade)
+            {
+                UpgradingTicks = ticks;
+                UnderUpgrade = true;
+            }
+            if (Upgrading && UnderUpgrade)
+            {
+                if (ticks-UpgradingTicks>=600)
+                {
+                    IceBullets = false;
+                    Upgrading = false;
+                    UnderUpgrade = false;
+                    if (type != "Ice")
+                        Damage--;
+                    Console.WriteLine("ENDED");
+                    Upgraded = false;
+                }
+                if (type == "Ice")
+                {
+                    IceBullets = true;
+                }
+                else if (!Upgraded)
+                {
+                    Damage++;
+                    Upgraded = true;
+                }
+            }
+        }
+        public void TwinStrike()
+        {
+            if(twinStrike&&!TwinStrikeActive)
+            {
+                TwinStrikeActive = true;
+                TwinStrikeTicks = ticks;
+            }
+            if(ticks - TwinStrikeTicks >=600)
+            {
+                TwinStrikeActive = false;
+                twinStrike = false;
+            }
+        }
     }
 }
